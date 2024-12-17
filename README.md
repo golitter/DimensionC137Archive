@@ -1,5 +1,5 @@
 # DimensionC137Archive
-Full-Stack Development Strategy: Viewing Archive - "Rick and Morty"
+SUST/Ulster-COM661-Full Stack Strategies and Development-2024 Autumn: Viewing Archive - "Rick and Morty"
 
 # Technology Stack
 
