@@ -1,0 +1,10 @@
+mongo:
+  url: 'mongodb://127.0.0.1:27017'
+  database: 'rm'
+
+app:
+  authentication:
+    secret_key: 'glm-secret-key'
+    algorithm: 'HS256'
+  debug: true
+  testing: false
