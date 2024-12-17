@@ -26,6 +26,8 @@ git@github.com:golitter/DimensionC137Archive.git
 
 **Frontend**: Go to the [`frontend`](https://github.com/golitter/DimensionC137Archive/tree/main/frontend) directory and check the README file.
 
+**Documentation**: Go to the `doc` directory to view the submitted assignment and the score.
+
 # License
 
 ```tex
