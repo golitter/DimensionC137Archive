@@ -1,0 +1,1787 @@
+{
+	"info": {
+		"_postman_id": "5391744e-77be-4d77-94ce-ac4fa3623a1b",
+		"name": "API: Rick & Morty TV series recording site",
+		"description": "**Infinite Realms: The Rick and Morty Series**\n\nThis document describes the APIs in each module of the website design, categorized into the following three types: `users`, `comments`, and `episodes`.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36161327"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "User Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// 生成随机字符串函数\r",
+									"function generateRandomString(length) {\r",
+									"    let result = '';\r",
+									"    const characters = 'abcdefghijklmn';\r",
+									"    const charactersLength = characters.length;\r",
+									"\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * charactersLength));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"// 生成随机用户名和密码\r",
+									"const randomUsername = 'user_' + generateRandomString(5);  // 生成5位随机用户名\r",
+									"const randomPassword = generateRandomString(8);  // 生成8位随机密码\r",
+									"\r",
+									"// 设置环境变量\r",
+									"pm.environment.set(\"randomUsername\", randomUsername);\r",
+									"pm.environment.set(\"randomPassword\", randomPassword);\r",
+									"\r",
+									"// 日志输出\r",
+									"console.log(\"Random Username: \" + randomUsername);\r",
+									"console.log(\"Random Password: \" + randomPassword);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "golitter",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "pwd",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "username",
+								"value": "glm",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "password",
+								"value": "password",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZ2xtIiwiYWRtaW4iOmZhbHNlLCJleHAiOjE3MjkzMjQ2MzR9.104jVauUcPYLRFqjSkQjOHJ_oS93KJOQyflnDnTRZVs",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"username\": \"{{randomUsername}}\",\r\n    \"password\": \"{{randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"register"
+							]
+						},
+						"description": "Registers a new user.\n\n- **Endpoint:** `/api/register`\n    \n- **Method:** `POST`\n    \n- jsonCopy code{ \"username\": \"string\", \"password\": \"string\"}\n    \n- **Response:**\n    \n    - `201 Created`: Success message if registration is successful.\n        \n    - `400 Bad Request`: Error message if username or password is missing or username already exists."
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"response = pm.response.json();\r",
+									"pm.globals.set(\"jwt_token\", response.token);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.token).to.exist;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "pwd",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "glm",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"glm\",\r\n    \"password\":\"pwd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"login"
+							]
+						},
+						"description": "Authenticates user and provides a JWT token for access.\n\n- **Endpoint:** `/api/login`\n    \n- **Method:** `GET`\n    \n- **Request Headers:**\n    \n    - **Authorization:** Basic Auth (Base64 encoded username and password).\n        \n- **Response:**\n    \n    - `200 OK`: Provides JWT token if login is successful.\n        \n    - `401 Unauthorized`: Error message if username or password is incorrect."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Episode as Favorite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required field 'message'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.have.property('message');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/67136ba105de40682dae2808/favorite",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"67136ba105de40682dae2808",
+								"favorite"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Adds or removes an episode from the user's list of favorites.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/favorite``\n    \n- **Method:** `POST`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode to mark as favorite).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- **Response:**\n    \n    - `200 OK`: Message indicating episode added or removed from favorites."
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Episode Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response content type is 'application/json'\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "episodes_id",
+								"value": "67134c1e46bf0a0ed474201d",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\":\"to_watch\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/{{epis_id}}/status",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"{{epis_id}}",
+								"status"
+							]
+						},
+						"description": "Marks an episode status as either \"to_watch\" or \"watched\" in the user’s account.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/status``\n    \n- **Method:** `POST`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode to update status).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- jsonCopy code{ \"status\": \"to_watch\" | \"watched\"}\n    \n- **Response:**\n    \n    - `200 OK`: Message confirming status update.\n        \n    - `400 Bad Request`: Error if the status is invalid."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content type is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/users/glm/status",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"glm",
+								"status"
+							]
+						},
+						"description": "Retrieves the watch status of the user’s favorite episodes and watchlists.\n\n- **Endpoint:** ``/api/users/<`username`>/status``\n    \n- **Method:** `GET`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `username` (Username of the user).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- **Response:**\n    \n    - `200 OK`: User status in JSON format.\n        \n    - `404 Not Found`: Error if the user is not found."
+					},
+					"response": []
+				},
+				{
+					"name": "User Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"User Logout Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required field 'message'\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"logout"
+							]
+						},
+						"description": "Logs out the user by blacklisting the JWT token.\n\n- **Endpoint:** `/api/logout`\n    \n- **Method:** `GET`\n    \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- **Response:**\n    \n    - `200 OK`: Success message confirming logout."
+					},
+					"response": []
+				}
+			],
+			"description": "Here is the API documentation for the \"User\" section."
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "Add Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Comment Add Test: Status code is 201\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message field is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response content type is 'application/json'\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\":\"has change\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/{{epis_id}}/comments",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"{{epis_id}}",
+								"comments"
+							]
+						},
+						"description": "Adds a new comment to a specific episode.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/comments``\n    \n- **Method:** `POST`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode to add a comment to).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- jsonCopy code{ \"comment\": \"string\"}\n    \n- **Response:**\n    \n    - `201 Created`: Message confirming comment was added.\n        \n    - `400 Bad Request`: Error if comment is empty."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Comment Change Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist.and.to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message field is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"\r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\":\"change\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/67136ba105de40682dae2807/comments/6715fdd4df8c106accbe104b",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"67136ba105de40682dae2807",
+								"comments",
+								"6715fdd4df8c106accbe104b"
+							]
+						},
+						"description": "Edits an existing comment on a specific episode.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/comments/<`comment_id`>``\n    \n- **Method:** `PUT`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode with the comment).\n        \n    - **Path Parameter:** `comment_id` (ID of the comment to edit).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- jsonCopy code{ \"comment\": \"string\"}\n    \n- **Response:**\n    \n    - `200 OK`: Message confirming comment was updated.\n        \n    - `400 Bad Request`: Error if comment is empty.\n        \n    - `403 Forbidden`: Error if the user is not the author of the comment.\n        \n    - `404 Not Found`: Error if episode or comment is not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Comment Delete Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Message is a non-empty string\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// db.episodes.findOne({_id:ObjectId(\"67136ba105de40682dae283e\")})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/67136ba105de40682dae283e/comments/671f41bbffff74d923324486",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"67136ba105de40682dae283e",
+								"comments",
+								"671f41bbffff74d923324486"
+							]
+						},
+						"description": "Deletes a specific comment on a specific episode.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/comments/<`comment_id`>``\n    \n- **Method:** `DELETE`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode with the comment).\n        \n    - **Path Parameter:** `comment_id` (ID of the comment to delete).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- **Response:**\n    \n    - `200 OK`: Message confirming comment was deleted.\n        \n    - `403 Forbidden`: Error if the user is not the author of the comment.\n        \n    - `404 Not Found`: Error if episode or comment is not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Like or Unlike Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.message).to.exist;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "jwt-token",
+								"value": "{{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/67136ba105de40682dae2807/comments/6713c2cf7ff9462f0aecac16/like",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"67136ba105de40682dae2807",
+								"comments",
+								"6713c2cf7ff9462f0aecac16",
+								"like"
+							]
+						},
+						"description": "Adds or removes a like on a specific comment.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/comments/<`comment_id`>/like``\n    \n- **Method:** `POST`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode with the comment).\n        \n    - **Path Parameter:** `comment_id` (ID of the comment to like or unlike).\n        \n- **Request Headers:**\n    \n    - `jwt-token`: Token provided during login.\n        \n- **Response:**\n    \n    - `200 OK`: Message confirming like was added or removed.\n        \n    - `404 Not Found`: Error if episode or comment is not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comments Sorted by Likes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Comment Sorted_by_likes Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content type is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each comment has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    \r",
+									"    responseData.forEach(comment => {\r",
+									"        pm.expect(comment).to.have.property('_id');\r",
+									"        pm.expect(comment).to.have.property('comment');\r",
+									"        pm.expect(comment).to.have.property('liked_by');\r",
+									"        pm.expect(comment).to.have.property('likes');\r",
+									"        pm.expect(comment).to.have.property('timestamp');\r",
+									"        pm.expect(comment).to.have.property('username');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The liked_by array is present in each comment and contains the expected data types\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(comment => {\r",
+									"        pm.expect(comment.liked_by).to.be.an('array');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/67136ba105de40682dae2807/comments/sorted_by_likes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"67136ba105de40682dae2807",
+								"comments",
+								"sorted_by_likes"
+							]
+						},
+						"description": "Retrieves all comments for a specific episode, sorted by the number of likes in descending order.\n\n- **Endpoint:** ``/api/episodes/<`episode_id`>/comments/sorted_by_likes``\n    \n- **Method:** `GET`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** `episode_id` (ID of the episode to retrieve comments for).\n        \n- **Response:**\n    \n    - `200 OK`: Returns a list of comments sorted by likes.\n        \n    - `404 Not Found`: Error if the episode is not found."
+					},
+					"response": []
+				}
+			],
+			"description": "Here is the API documentation for the \"Comments\" section."
+		},
+		{
+			"name": "episodes",
+			"item": [
+				{
+					"name": "Get All Episodes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate the episode object schema\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode).to.be.an('object');\r",
+									"        pm.expect(episode).to.have.property('_id');\r",
+									"        pm.expect(episode).to.have.property('airdate');\r",
+									"        pm.expect(episode).to.have.property('comments');\r",
+									"        pm.expect(episode).to.have.property('image');\r",
+									"        pm.expect(episode).to.have.property('likes');\r",
+									"        pm.expect(episode).to.have.property('name');\r",
+									"        pm.expect(episode).to.have.property('number');\r",
+									"        pm.expect(episode).to.have.property('rating');\r",
+									"        pm.expect(episode).to.have.property('runtime');\r",
+									"        pm.expect(episode).to.have.property('season');\r",
+									"        pm.expect(episode).to.have.property('summary');\r",
+									"        pm.expect(episode).to.have.property('url');\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes"
+							]
+						},
+						"description": "Fetches a list of all episodes.\n\n- **Endpoint**: `/api/episodes`\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `201`: Returns a list of serialized episodes."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Episode Details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes All Test: Status code is 201\", function() {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData._id).to.exist;\r",
+									"    pm.expect(responseData.airdate).to.exist;\r",
+									"    pm.expect(responseData.comments).to.exist;\r",
+									"    pm.expect(responseData.image).to.exist;\r",
+									"    pm.expect(responseData.likes).to.exist;\r",
+									"    pm.expect(responseData.name).to.exist;\r",
+									"    pm.expect(responseData.number).to.exist;\r",
+									"    pm.expect(responseData.rating).to.exist;\r",
+									"    pm.expect(responseData.runtime).to.exist;\r",
+									"    pm.expect(responseData.season).to.exist;\r",
+									"    pm.expect(responseData.summary).to.exist;\r",
+									"    pm.expect(responseData.url).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Comments have the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.comments).to.be.an('array');\r",
+									"    responseData.comments.forEach(function(comment) {\r",
+									"        pm.expect(comment).to.have.property('_id').that.is.a('string');\r",
+									"        pm.expect(comment).to.have.property('comment').that.is.a('string');\r",
+									"        pm.expect(comment).to.have.property('liked_by').that.is.an('array');\r",
+									"        pm.expect(comment).to.have.property('likes').that.is.a('number');\r",
+									"        pm.expect(comment).to.have.property('timestamp').that.is.a('string');\r",
+									"        pm.expect(comment).to.have.property('username').that.is.a('string');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Image has the required fields - medium, original\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.image).to.exist.and.to.have.property('medium');\r",
+									"    pm.expect(responseData.image).to.exist.and.to.have.property('original');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 300ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/{{epis_id}}",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"{{epis_id}}"
+							]
+						},
+						"description": "Retrieves detailed information about a specific episode.\n\n- **Endpoint**: ``/api/episodes/<`episode_id`>``\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `201`: Returns episode details in JSON format.\n        \n    - `404`: Episode not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Like an Episode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes Like Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required field - message\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.have.property('message');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/{{epis_id}}/like",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"{{epis_id}}",
+								"like"
+							]
+						},
+						"description": "Adds a like to a specified episode.\n\n- **Endpoint**: ``/api/episodes/<`episode_id`>/like``\n    \n- **Method**: `POST`\n    \n- **Response**:\n    \n    - `200`: Episode liked successfully."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Random Episode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"response = pm.response.json();\r",
+									"pm.globals.set(\"epis_id\", response._id);\r",
+									"\r",
+									"pm.test(\"Episodes Random Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate the response schema for all required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData._id).to.exist;\r",
+									"    pm.expect(responseData.airdate).to.exist;\r",
+									"    pm.expect(responseData.comments).to.exist;\r",
+									"    pm.expect(responseData.image).to.exist;\r",
+									"    pm.expect(responseData.likes).to.exist;\r",
+									"    pm.expect(responseData.name).to.exist;\r",
+									"    pm.expect(responseData.number).to.exist;\r",
+									"    pm.expect(responseData.rating).to.exist;\r",
+									"    pm.expect(responseData.runtime).to.exist;\r",
+									"    pm.expect(responseData.season).to.exist;\r",
+									"    pm.expect(responseData.summary).to.exist;\r",
+									"    pm.expect(responseData.url).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Image medium and original are valid URLs\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.image.medium).to.match(/^https?:\\/\\/.+/); // Validate medium URL\r",
+									"    pm.expect(responseData.image.original).to.match(/^https?:\\/\\/.+/); // Validate original URL\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Likes, number, average rating, runtime, and season are non-negative integers\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.likes).to.be.a('number').and.to.satisfy(val => val >= 0, \"Likes should be a non-negative integer\");\r",
+									"    pm.expect(responseData.number).to.be.a('number').and.to.satisfy(val => val >= 0, \"Number should be a non-negative integer\");\r",
+									"    pm.expect(responseData.rating.average).to.be.a('number').and.to.satisfy(val => val >= 0, \"Average rating should be a non-negative integer\");\r",
+									"    pm.expect(responseData.runtime).to.be.a('number').and.to.satisfy(val => val >= 0, \"Runtime should be a non-negative integer\");\r",
+									"    pm.expect(responseData.season).to.be.a('number').and.to.satisfy(val => val >= 0, \"Season should be a non-negative integer\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/random",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"random"
+							]
+						},
+						"description": "Fetches a random episode.\n\n- **Endpoint**: `/api/episodes/random`\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `200`: Returns random episode details.\n        \n    - `404`: No episodes available."
+					},
+					"response": []
+				},
+				{
+					"name": "Sort Episodes by Rating",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes Sorted_by_rating Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+									"\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode).to.have.property('_id');\r",
+									"        pm.expect(episode).to.have.property('airdate');\r",
+									"        pm.expect(episode).to.have.property('image').that.is.an('object');\r",
+									"        pm.expect(episode).to.have.property('likes');\r",
+									"        pm.expect(episode).to.have.property('name');\r",
+									"        pm.expect(episode).to.have.property('number');\r",
+									"        pm.expect(episode).to.have.property('rating').that.is.an('object').and.to.have.property('average');\r",
+									"        pm.expect(episode).to.have.property('runtime');\r",
+									"        pm.expect(episode).to.have.property('season');\r",
+									"        pm.expect(episode).to.have.property('summary');\r",
+									"        pm.expect(episode).to.have.property('url');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Rating object contains the 'average' field\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode.rating.average).to.exist;\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is within acceptable range\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/sorted_by_rating",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"sorted_by_rating"
+							]
+						},
+						"description": "Retrieves episodes sorted by rating in descending order.\n\n- **Endpoint**: `/api/episodes/sorted_by_rating`\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `200`: Sorted list of episodes by rating."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Episodes by Rating Range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes between min and max Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode).to.have.property('_id');\r",
+									"        pm.expect(episode).to.have.property('airdate');\r",
+									"        pm.expect(episode).to.have.property('comments');\r",
+									"        pm.expect(episode).to.have.property('image');\r",
+									"        pm.expect(episode).to.have.property('likes');\r",
+									"        pm.expect(episode).to.have.property('name');\r",
+									"        pm.expect(episode).to.have.property('number');\r",
+									"        pm.expect(episode).to.have.property('rating');\r",
+									"        pm.expect(episode).to.have.property('runtime');\r",
+									"        pm.expect(episode).to.have.property('season');\r",
+									"        pm.expect(episode).to.have.property('summary');\r",
+									"        pm.expect(episode).to.have.property('url');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Rating object contains the average field\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+									"    \r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode.rating).to.have.property('average');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Image object contains 'medium' and 'original' fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode.image).to.be.an('object');\r",
+									"        pm.expect(episode.image.medium).to.exist;\r",
+									"        pm.expect(episode.image.original).to.exist;\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/rating?min=7.8&max=8.7",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"rating"
+							],
+							"query": [
+								{
+									"key": "min",
+									"value": "7.8"
+								},
+								{
+									"key": "max",
+									"value": "8.7"
+								}
+							]
+						},
+						"description": "Retrieves episodes within the specified rating range.\n\n- **Endpoint**: `/api/episodes/rating`\n    \n- **Method**: `GET`\n    \n- **Query Parameters**:\n    \n    - `min`: Minimum rating (float)\n        \n    - `max`: Maximum rating (float)\n        \n- **Response**:\n    \n    - `200`: List of episodes within rating range.\n        \n    - `400`: Rating range required (if missing `min` or `max`)."
+					},
+					"response": []
+				},
+				{
+					"name": "Sort Episodes by Likes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes Sorted_by_likes Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validate the response schema for required fields\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    \r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode).to.have.property('_id');\r",
+									"        pm.expect(episode).to.have.property('airdate');\r",
+									"        pm.expect(episode).to.have.property('comments');\r",
+									"        pm.expect(episode).to.have.property('image');\r",
+									"        pm.expect(episode).to.have.property('likes');\r",
+									"        pm.expect(episode).to.have.property('name');\r",
+									"        pm.expect(episode).to.have.property('number');\r",
+									"        pm.expect(episode).to.have.property('rating');\r",
+									"        pm.expect(episode).to.have.property('runtime');\r",
+									"        pm.expect(episode).to.have.property('season');\r",
+									"        pm.expect(episode).to.have.property('summary');\r",
+									"        pm.expect(episode).to.have.property('url');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Likes is a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode.likes).to.be.a('number');\r",
+									"        pm.expect(episode.likes).to.be.at.least(0);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Summary is a non-empty string\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('array');\r",
+									"    responseData.forEach(function(episode) {\r",
+									"        pm.expect(episode.summary).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Summary should not be empty\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/sorted_by_likes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"sorted_by_likes"
+							]
+						},
+						"description": "Retrieves episodes sorted by the number of likes.\n\n- **Endpoint**: `/api/episodes/sorted_by_likes`\n    \n- **Method**: `GET`\n    \n- **Query Parameter**:\n    \n    - `order`: Sorting order, either `asc` or `desc` (default: `desc`)\n        \n- **Response**:\n    \n    - `200`: Sorted list of episodes by likes.\n        \n    - `400`: Invalid sort order."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Next Episode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes Next Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Next episode details are present\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.next_episode).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Comments array is present and not empty\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.next_episode.comments).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Comments array should not be empty\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Airdate is in a valid date format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.have.property('next_episode');\r",
+									"    pm.expect(responseData.next_episode.airdate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/7/10/next",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"7",
+								"10",
+								"next"
+							]
+						},
+						"description": "Fetches the next episode based on season and episode number.\n\n- **Endpoint**: ``/api/episodes/<`season`>/<`number`>/next``\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `200`: Next episode details.\n        \n    - `404`: Next episode not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Previous Episode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Episodes Prev Test: Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Previous episode object has the correct structure\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.previous_episode).to.be.an('object');\r",
+									"    pm.expect(responseData.previous_episode._id).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.airdate).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.comments).to.be.an('array');\r",
+									"    pm.expect(responseData.previous_episode.image).to.be.an('object');\r",
+									"    pm.expect(responseData.previous_episode.image.medium).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.image.original).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.likes).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.name).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.number).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.rating).to.be.an('object');\r",
+									"    pm.expect(responseData.previous_episode.rating.average).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.runtime).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.season).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.summary).to.be.a('string');\r",
+									"    pm.expect(responseData.previous_episode.url).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Airdate is in a valid date format\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.have.property('previous_episode');\r",
+									"    pm.expect(responseData.previous_episode.airdate).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Likes should be a non-negative integer\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.previous_episode.likes).to.be.a('number');\r",
+									"    pm.expect(responseData.previous_episode.likes).to.be.at.least(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/1/1/prev",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"1",
+								"1",
+								"prev"
+							]
+						},
+						"description": "Fetches the previous episode based on season and episode number.\n\n- **Endpoint**: ``/api/episodes/<`season`>/<`number`>/prev``\n    \n- **Method**: `GET`\n    \n- **Response**:\n    \n    - `200`: Previous episode details.\n        \n    - `404`: Previous episode not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Average Rate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Average rating field exists in the response\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.average_rating).to.exist;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Average rating is a non-negative number\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.average_rating).to.be.a('number').and.to.satisfy((num) => num >= 0, \"Average rating should be non-negative\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:5000/api/episodes/average_rating",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"episodes",
+								"average_rating"
+							]
+						},
+						"description": "Retrieves the average rating of all episodes.\n\n- **Endpoint:** `/api/episodes/average_rating`\n    \n- **Method:** `GET`\n    \n- **Request Parameters:**\n    \n    - **Path Parameter:** No\n        \n- **Response:**\n    \n    - `200 OK`: Returns the average rating of all episodes.\n        \n    - `404 Not Found`: Returns an error message if no episodes are found.\n        \n    - `500 Internal Server Error`: Returns an error message if any server error occurs."
+					},
+					"response": []
+				}
+			],
+			"description": "Here is the API documentation for the \"Episodes\" section."
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "pwd",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "glm",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
