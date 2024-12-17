@@ -1,0 +1,186 @@
+.news {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px; 
+}
+
+.news_container {
+  flex: 1; 
+  min-width: 300px; 
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+.lists-container {
+  flex: 2; 
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px;
+}
+
+.list-section {
+  flex: 1; 
+  min-width: 250px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  padding: 8px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+li:hover {
+  background-color: #f0f0f0;
+}
+
+.lists-container {
+  margin-top: 20px;
+}
+
+.list-section {
+  margin-bottom: 20px;
+}
+
+.list-section h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  cursor: pointer;
+  margin: 5px 0;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+li:hover {
+  background-color: #dcdcdc;
+}
+
+.news {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.news_container {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.tests p {
+  margin: 5px 0;
+  font-size: 1em;
+  color: #555;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 10px 20px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.primary-btn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.primary-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.secondary-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.primary-btn:hover, .secondary-btn:hover {
+  transform: scale(1.05);
+}
+
+.primary-btn:active, .secondary-btn:active {
+  transform: scale(0.95);
+}
+
+.input-field {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+  color: #333;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+.change-password-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.modal-title {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #444;
+}
+
+.btcontainer {
+  display: flex;
+  justify-content: space-between;
+}

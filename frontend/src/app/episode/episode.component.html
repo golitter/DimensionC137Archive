@@ -1,0 +1,42 @@
+<div class="main-container">
+
+  <div class="controls" style=" margin-top: 10px;">
+    <label for="sortOptions">Sort:</label>
+    <select id="sortOptions" [(ngModel)]="selectedSortOption" (change)="onSortChange()" style="width: 150px">
+      <option value="all">All</option>
+      <option value="rating">Sort by rating</option>
+      <option value="likes">Sort by likes</option>
+    </select>
+  </div>
+  <div class="home-container">
+    <div class="episode-list">
+      <div *ngFor="let episode of paginatedEpisodes" class="episode-item" (click)="goToEpisodeDetail(episode._id)">
+        <div class="episode-image">
+          <img [src]="episode.image?.medium || 'placeholder.jpg'" alt="{{ episode.name }}" />
+        </div>
+        <div class="episode-details">
+          <h3 class="episode-name">{{ episode.name }}</h3>
+          <div class="episode-summary-container">
+            <p class="episode-summary">
+              <span *ngIf="!episode.expanded">
+                {{episode.cleanedSummary}}
+              </span>
+            </p>
+          </div>
+          <div class="episode-meta">
+            <span class="likes">likes: {{ episode.likes || 0 }}</span>
+          </div>
+          <button class="status-btn" *ngIf="!isWatched(episode._id) && isInWatchlist(episode._id)"
+            (click)="markEpisodeStatus(episode._id, 'watched', $event)">Mark as watched</button>
+          <button class="status-btn" *ngIf="!isInWatchlist(episode._id) && !isWatched(episode._id)"
+            (click)="markEpisodeStatus(episode._id, 'to_watch', $event)">Add to watchlist</button>
+          <button class="status-btn" disabled *ngIf="isWatched(episode._id)">Add to watchlist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="paginator-container">
+    <mat-paginator [length]="episodes.length" [pageSize]="pageSize" [hidePageSize]="true"  (page)="onPageChange($event)"
+      aria-label="paging"></mat-paginator>
+  </div>
+</div>

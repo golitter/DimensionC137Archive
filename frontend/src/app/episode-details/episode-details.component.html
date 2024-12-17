@@ -1,0 +1,66 @@
+<div class="news">
+  <div class="news_container">
+    <div class="episode-detail" *ngIf="episode">
+      <div class="episode-main" style="width: 500px">
+        <div class="episode-image">
+          <img [src]="episode.image?.medium" alt="{{ episode.name }}">
+        </div>
+        <h2>{{ episode.name }}</h2>
+        <p>Release Date: {{ episode.airdate }}</p>
+        <p>Duration: {{ episode.runtime }} Minutes</p>
+        <div class="episode-summary" [innerHTML]="episode.summary"></div>
+        <div class="episode-url">
+          <a [href]="episode.url" target="_blank" class="btn btn-info">Click to Watch</a>
+        </div>
+      </div>
+      <!-- Comprehensive score display -->
+      <!-- Like and favorite -->
+      <div class="interaction-bar" style="width: 400px;">
+        <div style="text-align: left">
+          <a (click)="toggleLike()" class="interaction-link">
+            <i class="fa" [ngClass]="isLiked ? 'fa-thumbs-up' : 'fa-thumbs-o-up'"></i>
+            {{ isLiked ? 'Unlike' : 'Like' }} ({{ episode.likes }})
+          </a>
+          <a (click)="toggleFavorite()" class="interaction-link">
+            <i class="fa" [ngClass]="isFavorite ? 'fa-star' : 'fa-star-o'"></i>
+            {{ isFavorite ? 'Unfavorite' : 'Favorite' }}
+          </a>
+
+        </div>
+        <div class="average-rating">
+          <h3>Overall Rating: {{ averageRating | number: '1.1-1' }}/10.0 </h3>
+          <div class="rating-stars">
+            <i *ngFor="let star of stars; index as i" class="fa"
+              [ngClass]="i < averageRating ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+          </div>
+        </div>
+        <div class="navigation-bar" style="margin-top: 67%;">
+          <button class="normal-btn" style="height: 40px;width: 150px; margin: 5px;"
+            (click)="getPreviousEpisode()">Previous</button>
+          <button style="height: 40px;width: 150px; margin: 5px;" (click)="getNextEpisode()">Next</button>
+          <button class="random-btn" style="height: 40px;width: 150px; margin: 5px; "
+            (click)="getRandomEpisode()">Random</button>
+        </div>
+
+      </div>
+      <!-- Regional Review -->
+      <div class="episode-comments" style="width: 400px">
+        <h3>Comment</h3>
+        <textarea [(ngModel)]="newComment" placeholder="Write a comment..."></textarea>
+        <button (click)="submitComment()">Submit Comment</button>
+
+        <div *ngFor="let comment of episode.comments" class="comment">
+          <p>
+            <strong>{{ comment.username }}:</strong> {{ comment.comment }}
+            <a href="#" (click)="likeComment($event, comment._id)" class="comment-like">
+              👍 {{ comment.likes }}
+            </a>
+            <a href="#" (click)="deleteComment($event, comment._id)" class="comment-delete">
+              Delete
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

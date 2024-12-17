@@ -1,0 +1,33 @@
+<div class="news">
+  <!-- A list of your favorites, episodes you've watched, and episodes you want to watch -->
+  <div class="lists-container" style="width: 80%;">
+    <div class="list-section">
+      <h3>Collectible episodes</h3>
+      <ul>
+        <li *ngFor="let episode of favoriteEpisodes; let i = index" (click)="goToEpisodeDetail(episode)">
+          {{ episode.name || 'No name available' }} <!-- Null prevention   -->
+        </li>
+        <li *ngIf="favoriteEpisodes.length === 0">There is no collection of episodes</li>
+      </ul>
+    </div>
+    <div class="list-section">
+      <h3>Upcoming episodes</h3>
+      <ul>
+        <li *ngFor="let episode of watchlistEpisodes; let i = index" (click)="goToEpisodeDetail(episode)">
+          {{ episode.name || 'No name available' }} <!-- Null prevention  -->
+        </li>
+        <li *ngIf="watchlistEpisodes.length === 0">No episodes have been watched</li>
+
+      </ul>
+    </div>
+    <div class="list-section">
+      <h3>Watched episodes</h3>
+      <ul>
+         <li *ngFor="let episode of watchedEpisodes; let i = index" (click)="goToEpisodeDetail(episode)">
+          {{ episode.name || 'No name available' }} <!-- Null prevention -->
+        </li>
+        <li *ngIf="watchedEpisodes.length === 0">There are no upcoming episodes</li>
+      </ul>
+    </div>
+  </div>
+</div>

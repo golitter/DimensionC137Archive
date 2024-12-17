@@ -1,0 +1,68 @@
+<nav class="navs">
+  <div class="nav-brand" routerLink="/">
+    <img src="../assets/images/rm.webp" alt="Logo" class="nav-logo">
+    <h1 class="nav-title" (click)="goToHome()">home</h1>
+  </div>
+  <div class="col-md-6">
+    <!-- search box -->
+    <input type="text" class="form-control nav-search-bar" placeholder="Search..." [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()" />
+  </div>
+  <div class="nav-links">
+    <div *ngIf="!isLoggedIn" class="menu-item" (click)="showlogin()" (mouseleave)="hideSubMenu()">
+      login / register
+    </div>
+    <div *ngIf="isLoggedIn" class="menu-item">
+      <div class="menu-buttons">
+        <button routerLink="/users" class="menu-button">Personal Center</button>
+        <button (click)="logout()" class="menu-button">Quit</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>
+<div class="login-modal" *ngIf="(loginModalService.showModal$ | async)">
+  <div class="login-modal-content">
+    <div class="tab-container">
+      <div class="tab" (click)="switchTab('login')" [class.active]="activeTab === 'login'">login</div>
+      <div class="tab" (click)="switchTab('register')" [class.active]="activeTab === 'register'">register</div>
+    </div>
+    <form *ngIf="activeTab === 'login'" (ngSubmit)="login(email, password)" #loginForm="ngForm">
+      <div>
+        <label for="username">Account:</label>
+        <input type="text" id="username" name="username" [(ngModel)]="email" required>
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required>
+      </div>
+      <div class="btcontainer">
+        <button type="submit">Login</button>
+      </div>
+    </form>
+    <form *ngIf="activeTab === 'register'"
+      (ngSubmit)="register(email.value, password.value, repassword.value, emailInfo.value)" #registerForm="ngForm">
+      <div>
+        <label for="email">Account:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="emailModel" #email="ngModel">
+      </div>
+      <div>
+        <label for="logpassword">Password:</label>
+        <input type="password" id="logpassword" name="password" [(ngModel)]="passwordModel" #password="ngModel">
+      </div>
+      <div>
+        <label for="repassword">Confirm Password:</label>
+        <input type="password" id="repassword" name="repassword" [(ngModel)]="repasswordModel" #repassword="ngModel">
+      </div>
+      <div>
+        <label for="email-info">Email:</label>
+        <input type="text" id="emailInfo" name="emailInfo" [(ngModel)]="emailInfoModel" #emailInfo="ngModel">
+      </div>
+      <div class="btcontainer">
+        <button type="submit">Register</button>
+      </div>
+    </form>
+    <button class="close-button" (click)="toggleLoginModal()">X</button>
+  </div>
+</div>
