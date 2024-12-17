@@ -2,19 +2,19 @@
 npm install
 ```
 
-**运行**：
+**Run**：
 
 ```shell
 ng serve
 ```
 
-**测试**：
+**Test**：
 
 ```shell
 ng test
 ```
 
-**文档**：
+**Documentation**：
 
 ```shell
 npm run compodoc
