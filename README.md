@@ -28,6 +28,12 @@ git@github.com:golitter/DimensionC137Archive.git
 
 **Documentation**: Go to the `doc` directory to view the submitted assignment and the score.
 
+# Special Thanks
+
+A special thank you to the following repository for its inspiration and support:
+
+- [ShirasawaSama/GameStore: A simple homework for my Full Stack Developer course. (github.com)](https://github.com/ShirasawaSama/GameStore)
+
 # License
 
 ```tex
