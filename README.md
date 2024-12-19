@@ -14,6 +14,10 @@ SUST/Ulster-COM661-Full Stack Strategies and Development-2024 Autumn: Viewing Ar
 
 ![img](doc/images/f04b8afe8683db5f1b341001b2ccb33e.png)
 
+![img](doc/images/9f19a900ce09a318fba13e2d748208e0.png)
+
+![img](doc/images/82b8237a675a06e39181518997524600.png)
+
 # **Usage** 
 
 **Clone to local**：
