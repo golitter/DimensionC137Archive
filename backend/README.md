@@ -41,3 +41,4 @@ python app.py
 
 **Import API Documentation and Test Content**: Open `postman`, click `Import`, and import the json files from `/postman/..`.
 
+![](../doc/images/da50be59dcc569e656bd4042b26b40d7.png)
