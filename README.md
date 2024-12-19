@@ -18,7 +18,7 @@ SUST/Ulster-COM661-Full Stack Strategies and Development-2024 Autumn: Viewing Ar
 
 ![img](doc/images/82b8237a675a06e39181518997524600.png)
 
-# **Usage** 
+# Usage
 
 **Clone to local**：
 
@@ -36,11 +36,11 @@ git@github.com:golitter/DimensionC137Archive.git
 
 A special thank you to the following repository for its inspiration and support:
 
-- [ShirasawaSama/GameStore: A simple homework for my Full Stack Developer course. (github.com)](https://github.com/ShirasawaSama/GameStore)
+- [ShirasawaSama/GameStore: A simple homework for my Full Stack Developer course](https://github.com/ShirasawaSama/GameStore)
 
 # License
 
-```tex
+```shell
 MIT License
 
 Copyright (c) 2024 golemon
